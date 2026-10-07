@@ -13,8 +13,11 @@
 /* {{{ */
 PHP_FUNCTION(array_debuginfo) {
 	HashTable* ht;
-
+#if PHP_VERSION_ID >= 80600
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+#else
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+#endif
 		Z_PARAM_ARRAY_HT(ht)
 	ZEND_PARSE_PARAMETERS_END();
 
@@ -89,7 +92,7 @@ static void array_hash_distribution(zval* return_value, HashTable* ht) {
 PHP_FUNCTION(array_hash_distribution) {
 	HashTable* ht;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_ARRAY_HT(ht)
 	ZEND_PARSE_PARAMETERS_END();
 
@@ -100,7 +103,7 @@ PHP_FUNCTION(array_load_factor) {
 	HashTable* ht;
 	zval distribution;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_ARRAY_HT(ht)
 	ZEND_PARSE_PARAMETERS_END();
 
@@ -112,7 +115,7 @@ PHP_FUNCTION(array_load_factor) {
 
 	RETVAL_DOUBLE(((double)zend_array_count(ht)) / ((double) zend_array_count(Z_ARRVAL(distribution))));
 
-	zval_dtor(&distribution);
+	zval_ptr_dtor_nogc(&distribution);
 }
 
 /* {{{ PHP_RINIT_FUNCTION */
